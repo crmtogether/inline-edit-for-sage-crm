@@ -1,0 +1,5 @@
+Description=Inline edit from crmtogether.com
+Directory=inline
+multipleinstalls=y
+errorhandling=strict
+Version=2019
