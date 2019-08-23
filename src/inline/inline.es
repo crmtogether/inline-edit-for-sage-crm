@@ -36,3 +36,12 @@ CopyASPTo(_folder+'\\crmwizardnolang.js','\\CustomPages\\'+_folder+'\\crmwizardn
 CopyASPTo(_folder+'\\entry.asp','\\CustomPages\\'+_folder+'\\entry.asp');
 
 CopyASPTo('\\js\\inline.js','\\js\\custom\\inline.js');
+
+FamilyType='Tags';
+Family='GenCaptions';
+Code='Updated';
+CaptOrder=1;
+Captions['DE']='Aktualisierte';
+Captions['UK']='Updated';
+Captions['US']='Updated';
+AddCaption();

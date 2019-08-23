@@ -1,7 +1,8 @@
 
+var G_fields_url=new String(crm.url('../custompages/inline/entrygroup.asp'));
 var G_inline_url=new String(crm.url('../custompages/inline/entry.asp'));
 var G_iscurrencyfield=false;
-		
+var G_ScreenName="";
 function _parseData(data)
 {
 	//return new String(data);
@@ -31,13 +32,17 @@ function _editmode(field)
 }
 
 function __mouseEnter() {
-	var activeElementName=$(this).attr("id");
+	console.log("inline.js: __mouseEnter");
+	var activeElementName=$(this).find("> span").attr("id");
+	console.log("inline.js: __mouseLeave activeElementName:"+activeElementName);
 	activeElementName=activeElementName.substr(5);
-	$( '#_Capt'+activeElementName ).append( $( "<img onclick=\"_editmode('"+activeElementName+"');\" src=\"../Themes/img/ergonomic/buttons/edit.gif\" style=\"float: none;\" width=\"16px\" height=\"16px\" hspace=\"0\" border=\"0\" align=\"TOP\" title=\"\">" ) );
+	$( '#_Capt'+activeElementName ).append( $( "<img onclick=\"_editmode('"+activeElementName+"');\" src=\"../Themes/img/ergonomic/buttons/edit.gif\" style=\"float: right;\" width=\"16px\" height=\"16px\" hspace=\"0\" border=\"0\" align=\"TOP\" title=\"\">" ) );
 }
 
 function __mouseLeave() {
-	var activeElementName=$(this).attr("id");
+	console.log("inline.js: __mouseLeave");
+	var activeElementName=$(this).find("> span").attr("id");
+	console.log("inline.js: __mouseLeave activeElementName:"+activeElementName);
 	activeElementName=activeElementName.substr(5);
 	$( '#_Capt'+activeElementName ).find( "img:last" ).remove();
 }
@@ -50,7 +55,7 @@ function __updateData(activeElementName)
 {
 	console.log("__updateData:"+activeElementName);
 	var _url=G_inline_url;
-	_url=_url+"&field="+activeElementName;
+	_url=_url+"&field="+activeElementName+"&screen="+G_ScreenName;
 	var saveurl=new String(_url);
 	console.log("new value:"+$("#"+activeElementName).val());
 	saveurl=saveurl.replace("Mode=3","Mode=2");
@@ -74,15 +79,21 @@ function __updateData(activeElementName)
 	$.post( saveurl, _postdata)
 	  .done(function( data ) {
 		    console.log("__updateData done:"+activeElementName);
-			var _html= _parseData(data);
+			var _html= new String(_parseData(data));
 			$(td).html("");
-			$(td).html(_html);
-			$(td).css("border","none");
-		    $(td).css("outline","");
-			$('#_Capt'+activeElementName).hover(__mouseEnter,__mouseLeave);
-			$('#_Data'+activeElementName).hover(__mouseEnter,__mouseLeave);
-			$('#_Data'+activeElementName).dblclick(__fieldDoubleClick);
-			displayShortInfoMsg(crm.getTrans("GenCaptions","Updated")+": "+crm.getTrans('ColNames',activeElementName));
+			//make sure we cope with required fields
+			if (_html.indexOf("Required.gif")>0)
+			{
+				_html+="<img onclick=\"__updateData('"+activeElementName+"');\" src=\"../Themes/img/ergonomic/buttons/save.gif\" style=\"float: right;\" width=\"24px\" height=\"24px\" hspace=\"0\" border=\"0\" align=\"TOP\" title=\"\">"
+				$(td).html(_html);
+			} else {
+				$(td).html(_html);
+				$(td).css("border","none");
+				$(td).css("outline","");
+				$(td).hover(__mouseEnter,__mouseLeave);
+				$(td).dblclick(__fieldDoubleClick);
+				displayShortInfoMsg(crm.getTrans("GenCaptions","Updated")+": "+crm.getTrans('ColNames',activeElementName));
+			}
 	});		
 }
 function displayShortInfoMsg(msg)
@@ -92,17 +103,19 @@ function displayShortInfoMsg(msg)
 }
 
 function __fieldDoubleClick() {
+	console.log("inline.js: __fieldDoubleClick");
 	G_iscurrencyfield=false;//reset this
 	var _url=G_inline_url;
 	var activeElement=null;
 	var activeElementName="";
 	activeElement=this;
-	activeElementName=$(this).attr("id");
+	activeElementName=$(this).find("> span").attr("id");
+	console.log("inline.js: __fieldDoubleClick activeElementName:"+activeElementName);
 	activeElementName=activeElementName.substr(5);
 	console.log("activeElement: "+activeElementName);
-	_url=_url+"&field="+activeElementName;
+	_url=_url+"&field="+activeElementName+"&screen="+G_ScreenName;
 	//send info to page
-	var td=$(this).parent();
+	var td=$(this);
 	$.get( _url)
 	  .done(function( data ) {
 		var _edithtml= _parseData(data);  
@@ -110,13 +123,24 @@ function __fieldDoubleClick() {
 		$(td).html(_edithtml);
 		$(td).css("border","none");
 		$(td).css("outline","solid 1px #EBEDEF");
+		$(td).unbind('mouseenter mouseleave dblclick');
 	});
 }
 	
 $(document).ready(function () {
 	console.log("inline.js loading...");
-	$('span[id*="_Capt"]').hover(__mouseEnter,__mouseLeave);
-	$('span[id*="_Data"]').hover(__mouseEnter,__mouseLeave);
-	$('span[id*="_Data"]').dblclick(__fieldDoubleClick);
+	console.log("inline.js G_fields_url: "+G_fields_url)
+	$.get( G_fields_url)
+	  .done(function( data ) {
+		    console.log("inline.js screen fields:");
+			var json_fields=JSON.parse(data);
+			for(var x=0;x<json_fields.length;x++)
+			{
+			  	$('span[id="_Capt'+json_fields[x].fieldname+'"]').parent().hover(__mouseEnter,__mouseLeave);
+				$('span[id="_Capt'+json_fields[x].fieldname+'"]').parent().dblclick(__fieldDoubleClick);
+				G_ScreenName=json_fields[x].screenname;
+			}
+			
+	});			
 	
 });
