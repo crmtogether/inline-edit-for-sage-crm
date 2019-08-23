@@ -34,6 +34,7 @@ CopyASPTo(_folder+'\\crmconst.js','\\CustomPages\\'+_folder+'\\crmconst.js');
 CopyASPTo(_folder+'\\crmwizard.js','\\CustomPages\\'+_folder+'\\crmwizard.js');
 CopyASPTo(_folder+'\\crmwizardnolang.js','\\CustomPages\\'+_folder+'\\crmwizardnolang.js');
 CopyASPTo(_folder+'\\entry.asp','\\CustomPages\\'+_folder+'\\entry.asp');
+CopyASPTo(_folder+'\\entrygroup.asp','\\CustomPages\\'+_folder+'\\entrygroup.asp');
 
 CopyASPTo('\\js\\inline.js','\\js\\custom\\inline.js');
 
