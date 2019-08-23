@@ -2,7 +2,7 @@
 var G_fields_url=new String(crm.url('../custompages/inline/entrygroup.asp'));
 var G_inline_url=new String(crm.url('../custompages/inline/entry.asp'));
 var G_iscurrencyfield=false;
-var G_ScreenName="";
+
 function _parseData(data)
 {
 	//return new String(data);
@@ -55,13 +55,16 @@ function __updateData(activeElementName)
 {
 	console.log("__updateData:"+activeElementName);
 	var _url=G_inline_url;
-	_url=_url+"&field="+activeElementName+"&screen="+G_ScreenName;
+	
+	var _screenName = $('#_Capt'+activeElementName).parent().attr("ct_screenname"); 
+	_url=_url+"&field="+activeElementName+"&screen="+_screenName;
 	var saveurl=new String(_url);
 	console.log("new value:"+$("#"+activeElementName).val());
 	saveurl=saveurl.replace("Mode=3","Mode=2");
 	saveurl=saveurl.replace("Mode=1","Mode=2");
+	saveurl+=GetKeys();
 	var td=$('#_Capt'+activeElementName).parent();
-	var _postdata=activeElementName+"="+$("#"+activeElementName).val();
+	var _postdata=activeElementName+"="+encodeURIComponent($("#"+activeElementName).val());
 	
 	//currency field
 	if (__getFieldEntryType(activeElementName)=="51") 
@@ -113,7 +116,9 @@ function __fieldDoubleClick() {
 	console.log("inline.js: __fieldDoubleClick activeElementName:"+activeElementName);
 	activeElementName=activeElementName.substr(5);
 	console.log("activeElement: "+activeElementName);
-	_url=_url+"&field="+activeElementName+"&screen="+G_ScreenName;
+	var _screenName = $('#_Capt'+activeElementName).parent().attr("ct_screenname"); 
+	_url=_url+"&field="+activeElementName+"&screen="+_screenName;
+	_url+=GetKeys();
 	//send info to page
 	var td=$(this);
 	$.get( _url)
@@ -126,21 +131,42 @@ function __fieldDoubleClick() {
 		$(td).unbind('mouseenter mouseleave dblclick');
 	});
 }
+function _isEditMode()
+{
+	var editScreenacts=["Act=201","Act=222", "Act=284", "Act=263", "Act=193"]
+	var _url=new String(window.location);
+	if (_url.indexOf("Mode=3")>0)
+		{
+			return false;
+		} 
+	for (var x=0;x<editScreenacts.length;x++)
+	{
+		if (_url.indexOf(editScreenacts[x])>0)
+		{
+			return true;
+		}
+	}
+	return false;
+}
 	
 $(document).ready(function () {
 	console.log("inline.js loading...");
-	console.log("inline.js G_fields_url: "+G_fields_url)
-	$.get( G_fields_url)
-	  .done(function( data ) {
-		    console.log("inline.js screen fields:");
-			var json_fields=JSON.parse(data);
-			for(var x=0;x<json_fields.length;x++)
-			{
-			  	$('span[id="_Capt'+json_fields[x].fieldname+'"]').parent().hover(__mouseEnter,__mouseLeave);
-				$('span[id="_Capt'+json_fields[x].fieldname+'"]').parent().dblclick(__fieldDoubleClick);
-				G_ScreenName=json_fields[x].screenname;
-			}
-			
-	});			
+	console.log("inline.js G_fields_url: "+G_fields_url);
+	console.log("inline.js location:"+window.location);
+	if (!_isEditMode())
+	{
+		$.get( G_fields_url)
+		  .done(function( data ) {
+				console.log("inline.js screen fields:");
+				var json_fields=JSON.parse(data);
+				for(var x=0;x<json_fields.length;x++)
+				{
+					$('span[id="_Capt'+json_fields[x].fieldname+'"]').parent().hover(__mouseEnter,__mouseLeave);
+					$('span[id="_Capt'+json_fields[x].fieldname+'"]').parent().dblclick(__fieldDoubleClick);
+					$('span[id="_Capt'+json_fields[x].fieldname+'"]').parent().attr("ct_screenname",json_fields[x].screenname);
+				}
+				
+		});			
+	}
 	
 });

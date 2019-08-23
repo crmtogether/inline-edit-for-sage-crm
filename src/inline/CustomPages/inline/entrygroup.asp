@@ -6,10 +6,29 @@ function _getScreen(act)
   var res="";
   switch(act) {
 	  case "200":
-		res = "companyboxlong";
+	  case "201":
+	  case "140":
+		res = "'companyboxlong'";
 		break;
 	  case "220":
-		res = "personboxlong";
+	  case "222":
+	  case "141":
+		res = "'personboxlong'";
+		break;
+	  case "281":
+	  case "284":
+	  case "1192":
+		res = "'CaseDetailBox'";
+		break;		
+	  case "260":
+	  case "263":
+	  case "1190":
+		res = "'OpportunityDetailBox'";
+		break;		
+	  case "192":
+	  case "193":
+	  case "1191":
+		res = "'LeadCustomScreen','LeadDetailScreen','LeadCompanyScreen','LeadPersonScreen'";
 		break;
 	  default:
 		res = "noscreenfound";
@@ -31,7 +50,7 @@ if (act=="520")
 //get the entity that this fieldName belongs to
 var sql1="select SeaP_ColName, SeaP_SearchBoxName "+
 			"from custom_screens "+
-			"where SeaP_SearchBoxName='"+_getScreen(act)+"' "+
+			"where SeaP_SearchBoxName in ("+_getScreen(act)+") "+
 			"and Seap_DeviceID is null";
 
 var q1=CRM.CreateQueryObj(sql1);

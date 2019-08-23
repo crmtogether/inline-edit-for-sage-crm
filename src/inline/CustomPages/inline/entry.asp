@@ -60,10 +60,12 @@ var sql_screenentry="select  ColP_Entity, ColP_EntryType, SeaP_CreateScript, Sea
 		 
 var qsql_screenentry=CRM.CreateQueryObj(sql_screenentry);
 qsql_screenentry.SelectSQL();
-ent.CreateScript = qsql_screenentry("SeaP_CreateScript");
-ent.ValidateScript = qsql_screenentry("SeaP_ValidateScript");
-ent.OnChangeScript = qsql_screenentry("SeaP_OnChangeScript");
-
+if (!qsql_screenentry.eof)
+{
+	ent.CreateScript = qsql_screenentry("SeaP_CreateScript");
+	ent.ValidateScript = qsql_screenentry("SeaP_ValidateScript");
+	ent.OnChangeScript = qsql_screenentry("SeaP_OnChangeScript");
+}
 Response.Write(EntryGroup.Execute(record));
 
 %>
