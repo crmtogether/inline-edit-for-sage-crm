@@ -5,6 +5,12 @@ Provide a better user experience (and demo) within Sage CRM with inline editing
 
 <img src="https://raw.githubusercontent.com/crmtogether/inline-edit-for-sage-crm/master/company_summary_sage_crm.png" alt="Company Summary Sage CRM" />
 
+To install download the Sage CRM component
+
+               src/inline.zip
+
+and upload this into Sage CRM via the component manager. Reload the Sage CRM App pool in IIS OR restart IIS. 
+
 Screen support out of the box is
 
 1. Company screen - 'CompanyBoxLong'
