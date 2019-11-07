@@ -36,7 +36,7 @@ function __mouseEnter() {
 	var activeElementName=$(this).find("> span").attr("id");
 	console.log("inline.js: __mouseLeave activeElementName:"+activeElementName);
 	activeElementName=activeElementName.substr(5);
-	$( '#_Capt'+activeElementName ).append( $( "<img onclick=\"_editmode('"+activeElementName+"');\" src=\"../Themes/img/ergonomic/buttons/edit.gif\" style=\"float: right;\" width=\"16px\" height=\"16px\" hspace=\"0\" border=\"0\" align=\"TOP\" title=\"\">" ) );
+	$( '#_Capt'+activeElementName ).append( $( "<img onclick=\"_editmode('"+activeElementName+"');\" src=\"../Themes/img/ergonomic/buttons/edit.gif\" style=\"float: none;\" width=\"16px\" height=\"16px\" hspace=\"0\" border=\"0\" align=\"TOP\" title=\"\">" ) );
 }
 
 function __mouseLeave() {
@@ -124,7 +124,7 @@ function __fieldDoubleClick() {
 	$.get( _url)
 	  .done(function( data ) {
 		var _edithtml= _parseData(data);  
-		_edithtml+="<img onclick=\"__updateData('"+activeElementName+"');\" src=\"../Themes/img/ergonomic/buttons/save.gif\" style=\"float: right;\" width=\"24px\" height=\"24px\" hspace=\"0\" border=\"0\" align=\"TOP\" title=\"\">"
+		_edithtml+="<img onclick=\"__updateData('"+activeElementName+"');\" src=\"../Themes/img/ergonomic/buttons/save.gif\" style=\"float: none;\" width=\"24px\" height=\"24px\" hspace=\"0\" border=\"0\" align=\"TOP\" title=\"\">"
 		$(td).html(_edithtml);
 		$(td).css("border","none");
 		$(td).css("outline","solid 1px #EBEDEF");
