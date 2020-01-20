@@ -31,7 +31,7 @@ function _getScreen(act)
 		res = "'LeadCustomScreen','LeadDetailScreen','LeadCompanyScreen','LeadPersonScreen'";
 		break;
 	  default:
-		res = "noscreenfound";
+		res = "'noscreenfound'";
 	}
   return res;
 }
